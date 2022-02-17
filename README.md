@@ -87,6 +87,19 @@ Every print operation is cached and displayed when the program ends
 Look at the following table to look how to get those codons:
 [https://en.wikipedia.org/wiki/Codon_tables#Standard_RNA_codon_table]
 
+## Installation
+
+Download the interpreter from the releases:
+[https://github.com/KirrimK/Genetik/releases]
+
+### Build from source
+
+To build from source, you will need to install:
+```ocaml``` (from your package manager or windows installer),
+```dune``` (from the ```opam``` package manager for example).
+
+Install those dependencies, clone this repo, and run ```dune build```.
+
 ## How to use
 
 To execute your Genetik programs, run the Genetik interpreter:
