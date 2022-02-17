@@ -19,12 +19,33 @@ let has_file = fun filename ->
 
 let speclist =
   [("-d", Arg.Set is_step, "Start the interpreter in step by step / debug mode");
-   ("-mn", Arg.Unit (fun () -> run_mode := 0), "Set the cell execution mode to normal");
-   ("-mnr", Arg.Unit (fun () -> run_mode := 1), "Set the cell execution mode to normal reverse");
-   ("-mt", Arg.Unit (fun () -> run_mode := 2), "Set the cell execution mode to twin");
-   ("-mtr", Arg.Unit (fun () -> run_mode := 3), "Set the cell execution mode to twin reverse");
    ("-u", Arg.Set is_interactive, "Allow the interpreter to ask for user input");
-   ("-s", Arg.Set is_shut, "No input at all (neither stdin nor user input")];;
+   ("-s", Arg.Unit (fun () -> is_shut:= true; is_interactive := false), "No input at all (neither stdin nor user input) (overrides -u)");
+   ("-n", Arg.Unit (fun () -> run_mode := 0), "Set the cell execution mode to normal");
+   ("-nr", Arg.Unit (fun () -> run_mode := 1), "Set the cell execution mode to normal reverse");
+   ("-t", Arg.Unit (fun () -> run_mode := 2), "Set the cell execution mode to twin");
+   ("-tr", Arg.Unit (fun () -> run_mode := 3), "Set the cell execution mode to twin reverse");
+   ("-dn", Arg.Unit (fun () -> is_step := true; run_mode := 0), "Combination of d and n flags");
+   ("-dnr", Arg.Unit (fun () -> is_step := true; run_mode := 1), "Combination of d and nr flags");
+   ("-dt", Arg.Unit (fun () -> is_step := true; run_mode := 2), "Combination of d and t flags");
+   ("-dtr", Arg.Unit (fun () -> is_step := true; run_mode := 3), "Combination of d and tr flags");
+   ("-un", Arg.Unit (fun () -> is_interactive := true; run_mode := 0), "Combination of u and n flags");
+   ("-unr", Arg.Unit (fun () -> is_interactive := true; run_mode := 1), "Combination of u and nr flags");
+   ("-ut", Arg.Unit (fun () -> is_interactive := true; run_mode := 2), "Combination of u and t flags");
+   ("-utr", Arg.Unit (fun () -> is_interactive := true; run_mode := 3), "Combination of u and tr flags");
+   ("-sn", Arg.Unit (fun () -> is_shut := true; run_mode := 0), "Combination of s and n flags");
+   ("-snr", Arg.Unit (fun () -> is_shut := true; run_mode := 1), "Combination of s and nr flags");
+   ("-st", Arg.Unit (fun () -> is_shut := true; run_mode := 2), "Combination of s and t flags");
+   ("-str", Arg.Unit (fun () -> is_shut := true; run_mode := 3), "Combination of s and tr flags");
+   ("-dun", Arg.Unit (fun () -> is_step := true; is_interactive := true; run_mode := 0), "Combination of d, u and n flags");
+   ("-dunr", Arg.Unit (fun () -> is_step := true; is_interactive := true; run_mode := 1), "Combination of d, u and nr flags");
+   ("-dut", Arg.Unit (fun () -> is_step := true; is_interactive := true; run_mode := 2), "Combination of d, u and t flags");
+   ("-dutr", Arg.Unit (fun () -> is_step := true; is_interactive := true; run_mode := 3), "Combination of d, u and tr flags");
+   ("-dsn", Arg.Unit (fun () -> is_step := true; is_shut := true; run_mode := 0), "Combination of d, s and n flags");
+   ("-dsnr", Arg.Unit (fun () -> is_step := true; is_shut := true; run_mode := 1), "Combination of d, s and nr flags");
+   ("-dst", Arg.Unit (fun () -> is_step := true; is_shut := true; run_mode := 2), "Combination of d, s and t flags");
+   ("-dstr", Arg.Unit (fun () -> is_step := true; is_shut := true; run_mode := 3), "Combination of d, s and tr flags");
+   ];;
 
 (* Add other modes, like population mode, or merge mode *)
 
