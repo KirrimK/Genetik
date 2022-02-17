@@ -26,6 +26,8 @@ jobs:
         with:
           ocaml-version: ${{ matrix.ocaml-version }}
 
+      - opam install dune
+
       - run: opam exec -- dune build
 
       - name: Upload the build artifact
