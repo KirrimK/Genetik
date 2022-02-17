@@ -1,7 +1,7 @@
 (* Cell.ml *)
 
 open Adn;;
-open Transcribe;;
+open Arn;;
 open Codon;;
 open Amino;;
 
@@ -21,6 +21,7 @@ type stack_content =
 | Flag_while_overfly
 | Flag_ignore;;
 
+(* Stack content to string *)
 let stct_str = fun stct ->
   match stct with
     Int i -> string_of_int i

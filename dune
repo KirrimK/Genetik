@@ -3,5 +3,5 @@
     (flags (:standard -warn-error -A))))
 
 (executable
-    (name gene)
+    (name genetik)
     (libraries unix))

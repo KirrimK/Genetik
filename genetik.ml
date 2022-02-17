@@ -1,8 +1,10 @@
-(* Gene.ml *)
+(* Genetik.ml *)
 open Adn;;
 open Cell;;
 
-let usage_msg = "gene.exe [-d] [-i] [-m<s,sr,t,tr>] [<file>]";;
+(* -- Command-line arguments parsing -- *)
+
+let usage_msg = "genetik.exe [-d] [-i] [-m<s,sr,t,tr>] [<file>]";;
 let input_files = ref [];;
 let is_repl = ref true;;
 let is_step = ref false;;
@@ -13,10 +15,12 @@ let is_shut = ref true;;
 (* TODO: Try to fix problem with shebangs that prevent from using more than one flag,
    and no flag with arguments *)
 
+(* Add every unnamed argument to the list of files to use *)
 let has_file = fun filename ->
   input_files := filename::!input_files;
   is_repl := false;;
 
+(* Declaration of flags usable in the command line *)
 let speclist =
   [("-d", Arg.Set is_step, "Start the interpreter in step by step / debug mode");
    ("-u", Arg.Unit (fun () -> is_shut := false; is_interactive:= true), "Allow the interpreter to ask for user input");
@@ -48,8 +52,11 @@ let speclist =
    ("-ditr", Arg.Unit (fun () -> is_step := true; is_interactive := false; is_shut := false; run_mode := 3), "Combination of d, i and tr flags");
    ];;
 
-(* Add other modes, like population mode, or merge mode *)
+(* TODO: Add other modes, like population mode, or merge mode *)
 
+(* --                                -- *)
+
+(* REPL / file execution *)
 let rec exec = fun in_ ->
   try
     let strand = if !is_repl then
@@ -69,6 +76,7 @@ let rec exec = fun in_ ->
       ()
   with _ -> ();;
 
+(* Displaying the current mode to the user *)
 let mode_str = fun mode ->
   match mode with
     0 -> "n"
@@ -77,11 +85,15 @@ let mode_str = fun mode ->
   | 3 -> "tr"
   | _ -> "random";;
 
+(* Get the content of stdin at interpreter launch:
+    If some stdin was provided in the shell (via a pipe for example), will grab it
+    If no stdin was provided in the shell, will go into HEREDOC mode, waiting for the user to press ^D on an empty line *)
 let rec get_content_of_actual_stdin = fun acc ->
   try
     get_content_of_actual_stdin (String.cat acc (really_input_string stdin 1))
   with _ -> acc;;
 
+(* Start of interpreter *)
 let () =
   Random.self_init ();
   Arg.parse speclist has_file usage_msg;
@@ -89,5 +101,5 @@ let () =
   (* let () = Printf.printf "%s" stdin_str in *)
   let in_char_ls = List.of_seq (String.to_seq stdin_str) in
   if !is_repl then
-    Printf.printf "Gene v0.2 REPl\n%sInterpreting in mode %s.%s\nPress ^D or ^C to quit." (if !is_step then "Step-by-step mode is on | " else "") (mode_str !run_mode) (if !is_interactive then " | Interactive mode is on" else "");
+    Printf.printf "Genetik v0.5 REPl\n%sInterpreting in mode %s.%s\nPress ^D or ^C to quit." (if !is_step then "Step-by-step mode is On | " else "") (mode_str !run_mode) (if !is_interactive then " | Interactive mode is On" else "");
   exec in_char_ls;;

@@ -11,6 +11,7 @@ let codon_str = fun codon ->
 let codon_list_str = fun cdls ->
   String.concat " " (List.map codon_str cdls);;
 
+(* Convert groups of 3 arn bases into codons, as soon as the AUG (start codon) has been detected *)
 let arn_strand_to_codon_list = fun strand ->
   let rec prime = fun in_ acc ->
     match in_, acc with
