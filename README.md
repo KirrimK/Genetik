@@ -1,5 +1,7 @@
 # Genetik
 
+[![Build](https://github.com/KirrimK/Genetik/actions/workflows/build_on_tag.yml/badge.svg)](https://github.com/KirrimK/Genetik/actions/workflows/build_on_tag.yml)
+
 A weird programming language based on genetics
 
 ## Principle
