@@ -1,6 +1,6 @@
 (* Genetik.ml *)
 
-let VERSION_CODE = "0.5.0";;
+let version_code = "0.5.0";;
 
 open Adn;;
 open Cell;;
@@ -104,5 +104,5 @@ let () =
   (* let () = Printf.printf "%s" stdin_str in *)
   let in_char_ls = List.of_seq (String.to_seq stdin_str) in
   if !is_repl then
-    Printf.printf "Genetik v%s REPl\n%sInterpreting in mode %s.%s\nPress ^D or ^C to quit." VERSION_CODE (if !is_step then "Step-by-step mode is On | " else "") (mode_str !run_mode) (if !is_interactive then " | Interactive mode is On" else "");
+    Printf.printf "Genetik v%s REPl\n%sInterpreting in mode %s.%s\nPress ^D or ^C to quit." version_code (if !is_step then "Step-by-step mode is On | " else "") (mode_str !run_mode) (if !is_interactive then " | Interactive mode is On" else "");
   exec in_char_ls;;
