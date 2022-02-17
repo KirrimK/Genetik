@@ -1,4 +1,4 @@
-#!./_build/default/gene.exe -sn
+#!./_build/default/gene.exe -n
 atg
     ttt
     cat

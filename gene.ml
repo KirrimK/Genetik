@@ -8,7 +8,7 @@ let is_repl = ref true;;
 let is_step = ref false;;
 let run_mode = ref 4;;
 let is_interactive = ref false;;
-let is_shut = ref false;;
+let is_shut = ref true;;
 
 (* TODO: Try to fix problem with shebangs that prevent from using more than one flag,
    and no flag with arguments *)
@@ -19,8 +19,8 @@ let has_file = fun filename ->
 
 let speclist =
   [("-d", Arg.Set is_step, "Start the interpreter in step by step / debug mode");
-   ("-u", Arg.Set is_interactive, "Allow the interpreter to ask for user input");
-   ("-s", Arg.Unit (fun () -> is_shut:= true; is_interactive := false), "No input at all (neither stdin nor user input) (overrides -u)");
+   ("-u", Arg.Unit (fun () -> is_shut := false; is_interactive:= true), "Allow the interpreter to ask for user input");
+   ("-i", Arg.Unit (fun () -> is_shut:= false; is_interactive := false), "Give stdin as input to your programs");
    ("-n", Arg.Unit (fun () -> run_mode := 0), "Set the cell execution mode to normal");
    ("-nr", Arg.Unit (fun () -> run_mode := 1), "Set the cell execution mode to normal reverse");
    ("-t", Arg.Unit (fun () -> run_mode := 2), "Set the cell execution mode to twin");
@@ -29,26 +29,23 @@ let speclist =
    ("-dnr", Arg.Unit (fun () -> is_step := true; run_mode := 1), "Combination of d and nr flags");
    ("-dt", Arg.Unit (fun () -> is_step := true; run_mode := 2), "Combination of d and t flags");
    ("-dtr", Arg.Unit (fun () -> is_step := true; run_mode := 3), "Combination of d and tr flags");
-   ("-un", Arg.Unit (fun () -> is_interactive := true; run_mode := 0), "Combination of u and n flags");
-   ("-unr", Arg.Unit (fun () -> is_interactive := true; run_mode := 1), "Combination of u and nr flags");
-   ("-ut", Arg.Unit (fun () -> is_interactive := true; run_mode := 2), "Combination of u and t flags");
-   ("-utr", Arg.Unit (fun () -> is_interactive := true; run_mode := 3), "Combination of u and tr flags");
-   ("-sn", Arg.Unit (fun () -> is_shut := true; run_mode := 0), "Combination of s and n flags");
-   ("-snr", Arg.Unit (fun () -> is_shut := true; run_mode := 1), "Combination of s and nr flags");
-   ("-st", Arg.Unit (fun () -> is_shut := true; run_mode := 2), "Combination of s and t flags");
-   ("-str", Arg.Unit (fun () -> is_shut := true; run_mode := 3), "Combination of s and tr flags");
-   ("-du", Arg.Unit (fun () -> is_step := true; is_interactive := true), "Combination of d and u flags");
-   ("-du", Arg.Unit (fun () -> is_step := true; is_interactive := true), "Combination of d and u flags");
-   ("-du", Arg.Unit (fun () -> is_step := true; is_interactive := true), "Combination of d and u flags");
-   ("-du", Arg.Unit (fun () -> is_step := true; is_interactive := true), "Combination of d and u flags");
+   ("-un", Arg.Unit (fun () -> is_shut:= false; is_interactive := true; run_mode := 0), "Combination of u and n flags");
+   ("-unr", Arg.Unit (fun () -> is_shut:= false; is_interactive := true; run_mode := 1), "Combination of u and nr flags");
+   ("-ut", Arg.Unit (fun () -> is_shut:= false; is_interactive := true; run_mode := 2), "Combination of u and t flags");
+   ("-utr", Arg.Unit (fun () -> is_shut:= false; is_interactive := true; run_mode := 3), "Combination of u and tr flags");
+   ("-in", Arg.Unit (fun () -> is_shut := false; is_interactive := false; run_mode := 0), "Combination of i and n flags");
+   ("-inr", Arg.Unit (fun () -> is_shut := false; is_interactive := false; run_mode := 1), "Combination of i and nr flags");
+   ("-it", Arg.Unit (fun () -> is_shut := false; is_interactive := false; run_mode := 2), "Combination of i and t flags");
+   ("-itr", Arg.Unit (fun () -> is_shut := false; is_interactive := false; run_mode := 3), "Combination of i and tr flags");
+   ("-di", Arg.Unit (fun () -> is_step := true; is_interactive := false; is_shut := false), "Combination of d and i flags");
    ("-dun", Arg.Unit (fun () -> is_step := true; is_interactive := true; run_mode := 0), "Combination of d, u and n flags");
    ("-dunr", Arg.Unit (fun () -> is_step := true; is_interactive := true; run_mode := 1), "Combination of d, u and nr flags");
    ("-dut", Arg.Unit (fun () -> is_step := true; is_interactive := true; run_mode := 2), "Combination of d, u and t flags");
    ("-dutr", Arg.Unit (fun () -> is_step := true; is_interactive := true; run_mode := 3), "Combination of d, u and tr flags");
-   ("-dsn", Arg.Unit (fun () -> is_step := true; is_shut := true; run_mode := 0), "Combination of d, s and n flags");
-   ("-dsnr", Arg.Unit (fun () -> is_step := true; is_shut := true; run_mode := 1), "Combination of d, s and nr flags");
-   ("-dst", Arg.Unit (fun () -> is_step := true; is_shut := true; run_mode := 2), "Combination of d, s and t flags");
-   ("-dstr", Arg.Unit (fun () -> is_step := true; is_shut := true; run_mode := 3), "Combination of d, s and tr flags");
+   ("-din", Arg.Unit (fun () -> is_step := true; is_interactive := false; is_shut := false; run_mode := 0), "Combination of d, i and n flags");
+   ("-dinr", Arg.Unit (fun () -> is_step := true; is_interactive := false; is_shut := false; run_mode := 1), "Combination of d, i and nr flags");
+   ("-dit", Arg.Unit (fun () -> is_step := true; is_interactive := false; is_shut := false; run_mode := 2), "Combination of d, i and t flags");
+   ("-ditr", Arg.Unit (fun () -> is_step := true; is_interactive := false; is_shut := false; run_mode := 3), "Combination of d, i and tr flags");
    ];;
 
 (* Add other modes, like population mode, or merge mode *)
@@ -74,8 +71,8 @@ let rec exec = fun in_ ->
 
 let mode_str = fun mode ->
   match mode with
-    0 -> "s"
-  | 1 -> "sr"
+    0 -> "n"
+  | 1 -> "nr"
   | 2 -> "t"
   | 3 -> "tr"
   | _ -> "random";;
