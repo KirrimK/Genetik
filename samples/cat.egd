@@ -1,4 +1,4 @@
-#!./_build/default/gene.exe -mn
+#!./_build/default/gene.exe -n
 atg
     aac
     acc
