@@ -23,34 +23,34 @@ The following amino acids are mapped to the following instructions:
 
 ### Stack manipulation
 
-| Amino acid | Instruction
-| --- : | : ---
-| Phe | Push 0 on top of the active stack
-| Leu | Discard the top of the active stack
-| Ile | Switch the active stack and the other stack
-| Val | Swap the two upper elements of active stack
-| Asp | Duplicate the top of the stack
+| Amino acid | Instruction |
+| --- : | : --- |
+| Phe | Push 0 on top of the active stack |
+| Leu | Discard the top of the active stack |
+| Ile | Switch the active stack and the other stack |
+| Val | Swap the two upper elements of active stack |
+| Asp | Duplicate the top of the stack |
 
 ### Basic math
 
-| Amino acid | Instruction
-| --- : | : ---
-| His | Increment the top of the stack by one
-| Gln | Decrement the top of the stack by one
-| Glu | Add the second-most top of active stack to the top of same stack
-| Trp | Substract the second-most top of active stack to the top of same stack
+| Amino acid | Instruction |
+| --- : | : --- |
+| His | Increment the top of the stack by one |
+| Gln | Decrement the top of the stack by one |
+| Glu | Add the second-most top of active stack to the top of same stack |
+| Trp | Substract the second-most top of active stack to the top of same stack |
 
 ### Execution flow control
 
-| Amino acid | Instruction
-| --- : | : ---
-| Ser | If the top of the active stack is 0, jump to the corresponding Pro
-| Pro | End of corresponding if block
-| Thr | While the top of the stack is not 0, execute following block
-| Ala | End of corresponding while block
-| Tyr | Ignore every amino acid until Met is read
-| Met | If the Cell was ignoring the code, resume normal operation
-| Stop | Stop execution of the program, return success exit code
+| Amino acid | Instruction |
+| --- : | : --- |
+| Ser | If the top of the active stack is 0, jump to the corresponding Pro |
+| Pro | End of corresponding if block |
+| Thr | While the top of the stack is not 0, execute following block |
+| Ala | End of corresponding while block |
+| Tyr | Ignore every amino acid until Met is read |
+| Met | If the Cell was ignoring the code, resume normal operation |
+| Stop | Stop execution of the program, return success exit code |
 
 ### IO
 
@@ -70,17 +70,17 @@ Allow the interpreter to cache the provided stdin (via a pipe | in a unix shell 
 If no data is provided, will go into HEREDOC mode before launching the program, waiting for the user to provide data and end input with Ctrl+D on an empty line.
 Every print operation is cached and displayed when the program ends
 
-| Amino acid | Instruction
-| --- : | : ---
-| Asn | Get a char from stdin, and place its ASCII value on top of the active stack
-| Lys | Print the top of the stack as an ASCII character to stdout
-| Arg | Print the top of the stack as an integer to stdout
+| Amino acid | Instruction |
+| --- : | : --- |
+| Asn | Get a char from stdin, and place its ASCII value on top of the active stack |
+| Lys | Print the top of the stack as an ASCII character to stdout |
+| Arg | Print the top of the stack as an integer to stdout |
 
 ### Other
 
-| Amino acid | Instruction
-| --- : | : ---
-| Gly | (unused)
+| Amino acid | Instruction |
+| --- : | : --- |
+| Gly | (unused) |
 
 Look at the following table to look how to get those codons:
 [https://en.wikipedia.org/wiki/Codon_tables#Standard_RNA_codon_table]
