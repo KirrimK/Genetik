@@ -14,6 +14,7 @@ let is_step = ref false;;
 let run_mode = ref 4;;
 let is_interactive = ref false;;
 let is_shut = ref true;;
+let merge_mode = ref false;;
 
 (* TODO: Try to fix problem with shebangs that prevent from using more than one flag,
    and no flag with arguments *)
@@ -25,7 +26,8 @@ let has_file = fun filename ->
 
 (* Declaration of flags usable in the command line *)
 let speclist =
-  [("-d", Arg.Set is_step, "Start the interpreter in step by step / debug mode");
+  [("-m", Arg.Set merge_mode, "Merge two files provided as arguments. Does not start the interpreter.");
+   ("-d", Arg.Set is_step, "Start the interpreter in step by step / debug mode");
    ("-u", Arg.Unit (fun () -> is_shut := false; is_interactive:= true), "Allow the interpreter to ask for user input");
    ("-i", Arg.Unit (fun () -> is_shut:= false; is_interactive := false), "Give stdin as input to your programs");
    ("-n", Arg.Unit (fun () -> run_mode := 0), "Set the cell execution mode to normal");
@@ -54,6 +56,9 @@ let speclist =
    ("-dit", Arg.Unit (fun () -> is_step := true; is_interactive := false; is_shut := false; run_mode := 2), "Combination of d, i and t flags");
    ("-ditr", Arg.Unit (fun () -> is_step := true; is_interactive := false; is_shut := false; run_mode := 3), "Combination of d, i and tr flags");
    ];;
+(* TODO: these combination flags are terrible, but necessary to work in file containing shebangs #! because
+Arg.parse recognizes multiple flags as one big flag but doesn't make sense of it. Would be good to get rid of them *)
+
 
 (* TODO: Add other modes, like population mode, or merge mode *)
 
@@ -69,6 +74,7 @@ let rec exec = fun in_ ->
                  else
                    let ic = open_in (List.hd (List.rev !input_files)) in
                    let file = really_input_string ic (in_channel_length ic) in
+                   let () = close_in ic in
                    let char_list = List.of_seq (String.to_seq file) in
                    List.fold_left (fun x elt -> try (adn_base_from_char elt)::x with _ -> x) [] (List.rev char_list) in
     let (result, out) = run_cell !is_step !is_interactive !run_mode strand in_ in
@@ -103,6 +109,22 @@ let () =
   let stdin_str = (if !is_interactive || !is_shut then "" else get_content_of_actual_stdin "") in
   (* let () = Printf.printf "%s" stdin_str in *)
   let in_char_ls = List.of_seq (String.to_seq stdin_str) in
-  if !is_repl then
-    Printf.printf "Genetik v%s REPl\n%sInterpreting in mode %s.%s\nPress ^D or ^C to quit." version_code (if !is_step then "Step-by-step mode is On | " else "") (mode_str !run_mode) (if !is_interactive then " | Interactive mode is On" else "");
-  exec in_char_ls;;
+  if not !merge_mode then
+    let _ = if !is_repl then Printf.printf "Genetik v%s REPl\n%sInterpreting in mode %s.%s\nPress ^D or ^C to quit." version_code (if !is_step then "Step-by-step mode is On | " else "") (mode_str !run_mode) (if !is_interactive then " | Interactive mode is On" else "") else () in
+    exec in_char_ls
+  else
+    match !input_files with
+      a::b::_ -> let ica = open_in a in
+                 let filea = really_input_string ica (in_channel_length ica) in
+                 let () = close_in ica in
+                 let icb = open_in b in
+                 let fileb = really_input_string icb (in_channel_length icb) in
+                 let () = close_in icb in
+                 let char_list_a = List.of_seq (String.to_seq filea) in
+                 let strand_a = List.fold_left (fun x elt -> try (adn_base_from_char elt)::x with _ -> x) [] (List.rev char_list_a) in
+                 let char_list_b = List.of_seq (String.to_seq fileb) in
+                 let strand_b = List.fold_left (fun x elt -> try (adn_base_from_char elt)::x with _ -> x) [] (List.rev char_list_b) in
+                 (* for now, only combines the normal strands, will increase madness afterwards *)
+                 let _ = List.map (fun x -> Printf.printf "%s\n" (adn_strand_str x)) (meiosis strand_a strand_b) in ()
+                 
+    | _ -> Printf.printf "Meiosis failure: requires two strands of DNA (files).";
