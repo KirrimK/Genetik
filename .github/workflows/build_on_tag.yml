@@ -33,5 +33,5 @@ jobs:
       - name: Upload the build artifact
         uses: actions/upload-artifact@v2
         with:
-          name: gene-{{ matrix.os }}.exe
+          name: gene-${{ matrix.os }}.exe
           path: _build/default/gene.exe
