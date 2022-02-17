@@ -24,7 +24,7 @@ The following amino acids are mapped to the following instructions:
 ### Stack manipulation
 
 | Amino acid | Instruction |
-| --- : | : --- |
+| --: | :-- |
 | Phe | Push 0 on top of the active stack |
 | Leu | Discard the top of the active stack |
 | Ile | Switch the active stack and the other stack |
@@ -34,7 +34,7 @@ The following amino acids are mapped to the following instructions:
 ### Basic math
 
 | Amino acid | Instruction |
-| --- : | : --- |
+| --: | :-- |
 | His | Increment the top of the stack by one |
 | Gln | Decrement the top of the stack by one |
 | Glu | Add the second-most top of active stack to the top of same stack |
@@ -43,7 +43,7 @@ The following amino acids are mapped to the following instructions:
 ### Execution flow control
 
 | Amino acid | Instruction |
-| --- : | : --- |
+| --: | :-- |
 | Ser | If the top of the active stack is 0, jump to the corresponding Pro |
 | Pro | End of corresponding if block |
 | Thr | While the top of the stack is not 0, execute following block |
@@ -71,7 +71,7 @@ If no data is provided, will go into HEREDOC mode before launching the program, 
 Every print operation is cached and displayed when the program ends
 
 | Amino acid | Instruction |
-| --- : | : --- |
+| --: | :-- |
 | Asn | Get a char from stdin, and place its ASCII value on top of the active stack |
 | Lys | Print the top of the stack as an ASCII character to stdout |
 | Arg | Print the top of the stack as an integer to stdout |
@@ -79,7 +79,7 @@ Every print operation is cached and displayed when the program ends
 ### Other
 
 | Amino acid | Instruction |
-| --- : | : --- |
+| --: | :-- |
 | Gly | (unused) |
 
 Look at the following table to look how to get those codons:
@@ -93,14 +93,14 @@ To execute your Genetik programs, run the Genetik interpreter:
 
 Several flags can be provided to the interpreter to change its execution mode:
 
-Flags | Mode
---- : | : ---
--d | Run programs in step by step mode (with debug information)
--u | User interaction IO mode
--i | Cached input IO mode
--n | Force the interpreter to run the normal strand
--nr | Force the interpreter to run the normal reversed strand
--t | Force the interpreter to run the twin strand
--tr | Force the interpreter to run the twin reversed strand
+| Flags | Mode |
+| --: | :-- |
+| -d | Run programs in step by step mode (with debug information) |
+| -u | User interaction IO mode |
+| -i | Cached input IO mode |
+| -n | Force the interpreter to run the normal strand |
+| -nr | Force the interpreter to run the normal reversed strand |
+| -t | Force the interpreter to run the twin strand |
+| -tr | Force the interpreter to run the twin reversed strand |
 
 Combinations of those flags are accepted (except the -u and -i flags).
