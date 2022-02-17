@@ -1,4 +1,4 @@
-name: Build on Pull requests and Push
+name: Build
 
 on:
   - pull_request
@@ -10,6 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         os:
+          - macos-latest
           - windows-latest
           - ubuntu-latest
         ocaml-version:
@@ -30,8 +31,10 @@ jobs:
 
       - run: opam exec -- dune build
 
+      # once tests have been created, add tests checking here
+
       - name: Upload the build artifact
         uses: actions/upload-artifact@v2
         with:
-          name: gene-${{ matrix.os }}.exe
+          name: gene-${{ matrix.os }}
           path: _build/default/gene.exe
