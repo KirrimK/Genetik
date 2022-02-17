@@ -37,6 +37,10 @@ let speclist =
    ("-snr", Arg.Unit (fun () -> is_shut := true; run_mode := 1), "Combination of s and nr flags");
    ("-st", Arg.Unit (fun () -> is_shut := true; run_mode := 2), "Combination of s and t flags");
    ("-str", Arg.Unit (fun () -> is_shut := true; run_mode := 3), "Combination of s and tr flags");
+   ("-du", Arg.Unit (fun () -> is_step := true; is_interactive := true), "Combination of d and u flags");
+   ("-du", Arg.Unit (fun () -> is_step := true; is_interactive := true), "Combination of d and u flags");
+   ("-du", Arg.Unit (fun () -> is_step := true; is_interactive := true), "Combination of d and u flags");
+   ("-du", Arg.Unit (fun () -> is_step := true; is_interactive := true), "Combination of d and u flags");
    ("-dun", Arg.Unit (fun () -> is_step := true; is_interactive := true; run_mode := 0), "Combination of d, u and n flags");
    ("-dunr", Arg.Unit (fun () -> is_step := true; is_interactive := true; run_mode := 1), "Combination of d, u and nr flags");
    ("-dut", Arg.Unit (fun () -> is_step := true; is_interactive := true; run_mode := 2), "Combination of d, u and t flags");
@@ -54,7 +58,7 @@ let rec exec = fun in_ ->
     let strand = if !is_repl then
                    let () = Printf.printf "\n> " in
                    let char_list = List.of_seq (String.to_seq (read_line ())) in
-                   List.map adn_base_from_char char_list
+                   List.fold_left (fun x elt -> try (adn_base_from_char elt)::x with _ -> x) [] (List.rev char_list)
                  else
                    let ic = open_in (List.hd (List.rev !input_files)) in
                    let file = really_input_string ic (in_channel_length ic) in
